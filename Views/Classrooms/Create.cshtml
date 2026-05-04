@@ -1,0 +1,31 @@
+﻿@model CAE_CRM.Models.Classrooms.ClassroomFormModel
+@{
+    ViewData["Title"] = "Crear Salón";
+}
+
+<div style="max-width: 500px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-top: 4px solid #002b5c;">
+    <h2 style="color: #002b5c; margin-top: 0;">Alta de Salón</h2>
+    
+    @if (ViewBag.Error != null)
+    {
+        <div style="background: #f8d7da; color: #842029; padding: 10px; border-radius: 4px; margin-bottom: 15px;">@ViewBag.Error</div>
+    }
+
+    <form asp-action="Create" method="post">
+        <div style="margin-bottom: 20px;">
+            <label asp-for="Name" style="display: block; font-weight: 500; margin-bottom: 8px;">Nombre (Ej. A8, L3)</label>
+            <input asp-for="Name" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" />
+            <span asp-validation-for="Name" style="color: #dc3545; font-size: 12px;"></span>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label asp-for="LocationDetails" style="display: block; font-weight: 500; margin-bottom: 8px;">Ubicación o Detalles Adicionales</label>
+            <textarea asp-for="LocationDetails" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; min-height: 80px;"></textarea>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <a asp-action="Index" style="flex: 1; text-align: center; background-color: #f8f9fa; color: #333; padding: 12px; text-decoration: none; border: 1px solid #ddd; border-radius: 4px;">Cancelar</a>
+            <button type="submit" style="flex: 2; background-color: #002b5c; color: white; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Guardar Salón</button>
+        </div>
+    </form>
+</div>

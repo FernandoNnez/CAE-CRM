@@ -1,0 +1,80 @@
+﻿@model IEnumerable<CAE_CRM.Models.Computers.ComputerListModel>
+@{
+    ViewData["Title"] = "Inventario de Computadoras";
+}
+
+<div style="padding: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="color: #002b5c; margin: 0;">Equipos de Cómputo</h2>
+        <a asp-action="Create" style="background-color: #002b5c; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">+ Nueva PC</a>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div style="background: #f8d7da; color: #842029; padding: 12px; border-radius: 4px; margin-bottom: 15px;">
+            @TempData["Error"]
+        </div>
+    }
+
+    <table style="width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <thead>
+            <tr style="background-color: #f4f7f6; border-bottom: 2px solid #d59f0f;">
+                <th style="padding: 12px; text-align: left;">S/N</th>
+                <th style="padding: 12px; text-align: left;">Marca / Modelo</th>
+                <th style="padding: 12px; text-align: left;">Procesador</th>
+                <th style="padding: 12px; text-align: center;">RAM</th>
+                <th style="padding: 12px; text-align: left;">Ubicación</th>
+                <th style="padding: 12px; text-align: left;">Estado</th>
+                <th style="padding: 12px; text-align: center;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 12px; font-family: monospace; font-weight:bold;">@item.SerialNumber</td>
+                    <td style="padding: 12px;">@item.Brand @item.Model</td>
+                    <td style="padding: 12px; font-size: 14px;">@item.Processor</td>
+                    <td style="padding: 12px; text-align: center; font-weight: bold;">@item.TotalMemoryGB GB</td>
+                    <td style="padding: 12px;">
+                        @item.ClassroomName
+                        @if (!string.IsNullOrEmpty(item.Desk))
+                        {
+                            <br /><small style="color: #666;">(Cub: @item.Desk)</small>
+                        }
+                    </td>
+                    <td style="padding: 12px;">
+                        @if (item.Status == "Active")
+                        {
+                            <span style="background-color: #d4edda; color: #155724; padding: 4px 8px; border-radius: 12px; font-size: 12px;">Activo</span>
+                        }
+                        else if (item.Status == "Maintenance")
+                        {
+                            <span style="background-color: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 12px; font-size: 12px;">Mantenimiento</span>
+                        }
+                        else
+                        {
+                            <span style="background-color: #f8d7da; color: #721c24; padding: 4px 8px; border-radius: 12px; font-size: 12px;">Baja Definitiva</span>
+                        }
+                    </td>
+                    <td style="padding: 12px; text-align: center;">
+                        <a asp-action="Edit" asp-route-id="@item.ComputerID" style="color: #002b5c; text-decoration: none; margin-right: 15px; font-weight: bold;">Detalles</a>
+                        
+                        @if (item.Status != "Discarded")
+                        {
+                            <form asp-action="Delete" asp-route-id="@item.ComputerID" method="post" style="display:inline;" onsubmit="return confirm('¿Estás seguro de dar de baja este equipo? Cambiará su estado a Baja Definitiva, pero su historial se conservará.');">
+                                <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; font-weight: bold; padding: 0;">Baja</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="Restore" asp-route-id="@item.ComputerID" method="post" style="display:inline;" onsubmit="return confirm('¿Deseas rehabilitar este equipo y regresarlo al estado Activo?');">
+                                <button type="submit" style="background: none; border: none; color: #28a745; cursor: pointer; font-weight: bold; padding: 0;">Rehabilitar</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

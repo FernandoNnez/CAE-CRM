@@ -1,0 +1,100 @@
+﻿@model CAE_CRM.Models.Users.CreateUserModel
+@{
+    ViewData["Title"] = "Alta Usuario";
+}
+
+<style>
+    :root {
+        --unam-blue: #002b5c;
+        --unam-gold: #d59f0f;
+    }
+
+    .form-card {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        max-width: 500px;
+        margin: 40px auto;
+        border-top: 4px solid var(--unam-blue);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+    .form-control, .form-select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--unam-gold);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(213, 159, 15, 0.2);
+        }
+
+    .btn-submit {
+        background-color: var(--unam-blue);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+        .btn-submit:hover {
+            background-color: #001a38;
+        }
+</style>
+
+<div class="form-card">
+    <h2 style="color: var(--unam-blue); margin-top: 0;">Alta de Usuario</h2>
+    <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+        Registra un nuevo usuario. Los usuarios <strong>Admin</strong> tienen control total del sistema, cuidado.
+    </p>
+
+    @if (ViewBag.Error != null)
+    {
+        <div style="background: #f8d7da; color: #842029; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+            @ViewBag.Error
+        </div>
+    }
+
+    <form asp-action="Create" method="post">
+        <div class="form-group">
+            <label asp-for="User">Nombre de Usuario</label>
+            <input asp-for="User" class="form-control" placeholder="Ej. wiskas" />
+            <span asp-validation-for="User" style="color: #dc3545; font-size: 12px;"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password">Contraseña</label>
+            <input asp-for="Password" type="password" class="form-control" placeholder="Mínimo 6 caracteres" />
+            <span asp-validation-for="Password" style="color: #dc3545; font-size: 12px;"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Role">Nivel de Acceso (Rol)</label>
+            <select asp-for="Role" class="form-select">
+                <option value="Standard">Standard (Solo Inventario)</option>
+                <option value="Admin">Administrador (Control Total)</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn-submit">Registrar Usuario</button>
+    </form>
+</div>

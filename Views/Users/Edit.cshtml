@@ -1,0 +1,53 @@
+﻿@model CAE_CRM.Models.Users.EditUserModel
+@{
+    ViewData["Title"] = "Editar Usuario";
+}
+
+<div style="max-width: 500px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-top: 4px solid #002b5c;">
+    <h2 style="color: #002b5c; margin-top: 0;">Editar Usuario: @Model.User</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div style="background: #f8d7da; color: #842029; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+            @ViewBag.Error
+        </div>
+    }
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="ID" />
+
+        <div style="margin-bottom: 20px;">
+            <label asp-for="User" style="display: block; font-weight: 500; margin-bottom: 8px;">Nombre de Usuario</label>
+            <input asp-for="User" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;" />
+            <span asp-validation-for="User" style="color: #dc3545; font-size: 12px;"></span>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label asp-for="Role" style="display: block; font-weight: 500; margin-bottom: 8px;">Nivel de Acceso</label>
+            <select asp-for="Role" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                <option value="Standard">Standard (Solo Inventario)</option>
+                <option value="Admin">Administrador (Control Total)</option>
+            </select>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: flex; align-items: center; cursor: pointer;">
+                <input asp-for="Active" type="checkbox" style="width: 18px; height: 18px; margin-right: 10px;" />
+                <span style="font-weight: 500;">Cuenta Activa (Permitir acceso)</span>
+            </label>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 25px 0;" />
+        
+        <div style="margin-bottom: 20px;">
+            <label asp-for="NewPassword" style="display: block; font-weight: 500; margin-bottom: 8px;">Restablecer Contraseña <small style="color:#666; font-weight:normal;">(Déjalo en blanco si no deseas cambiarla)</small></label>
+            <input asp-for="NewPassword" type="password" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;" />
+            <span asp-validation-for="NewPassword" style="color: #dc3545; font-size: 12px;"></span>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <a asp-action="Index" style="flex: 1; text-align: center; background-color: #f8f9fa; color: #333; padding: 12px; text-decoration: none; border: 1px solid #ddd; border-radius: 4px;">Cancelar</a>
+            <button type="submit" style="flex: 2; background-color: #002b5c; color: white; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Guardar Cambios</button>
+        </div>
+    </form>
+</div>
