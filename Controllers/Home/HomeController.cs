@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CAE_CRM.Controllers
 {
-    [Authorize] // Exige que el usuario tenga sesión iniciada
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly string _connectionString;
@@ -20,7 +20,6 @@ namespace CAE_CRM.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // Inicializamos en ceros. Así, si la BD falla, la pantalla se muestra con 0s en lugar de tronar
             var kpis = new DashboardModel
             {
                 TotalComputers = 0,
@@ -35,7 +34,6 @@ namespace CAE_CRM.Controllers
                 {
                     await connection.OpenAsync();
 
-                    // 1. LEER LOS KPIs (Lo que ya tenías)
                     using (var cmdKpi = new SqlCommand("cae_CRM_GetDashboardMetrics", connection))
                     {
                         cmdKpi.CommandType = CommandType.StoredProcedure;
@@ -49,9 +47,8 @@ namespace CAE_CRM.Controllers
                                 kpis.TotalInMaintenance = Convert.ToInt32(reader["TotalInMaintenance"]);
                             }
                         }
-                    } // Se cierra el primer DataReader
+                    }
 
-                    // 2. LEER LOS ÚLTIMOS MOVIMIENTOS
                     using (var cmdMov = new SqlCommand("cae_CRM_GetRecentMovements", connection))
                     {
                         cmdMov.CommandType = CommandType.StoredProcedure;
@@ -62,8 +59,9 @@ namespace CAE_CRM.Controllers
                                 kpis.RecentMovements.Add(new RecentMovementModel
                                 {
                                     ClassroomName = readerMov["ClassroomName"]?.ToString() ?? "Sin Asignar",
-                                    Desk = readerMov["Desk"] != DBNull.Value ? readerMov["Desk"].ToString() : string.Empty, // NUEVO CAMPO
-                                    SerialNumber = readerMov["SerialNumber"].ToString(),
+                                    Desk = readerMov["Desk"] != DBNull.Value ? readerMov["Desk"].ToString() : string.Empty,
+                                    ManufacturerSerialNumber = readerMov["@ManufacturerSerialNumber"].ToString(),
+                                    UniversityInventoryNumber = readerMov["UniversityInventoryNumber"].ToString(),
                                     MovementType = readerMov["MovementType"].ToString(),
                                     MovementDate = Convert.ToDateTime(readerMov["MovementDate"])
                                 });
@@ -74,20 +72,14 @@ namespace CAE_CRM.Controllers
             }
             catch (Exception ex)
             {
-                // Registramos el error en la base de datos indicando que ocurrió en HomeController.Index
                 await LogErrorAsync("Error", "HomeController.Index", ex);
 
-                // Opcional: Mandar un mensaje a la vista para avisarle al usuario que los datos podrían no estar actualizados
                 ViewBag.Warning = "No se pudieron cargar las métricas en tiempo real. Mostrando valores por defecto.";
             }
 
-            // Enviamos el modelo dinámico a tu vista
             return View(kpis);
         }
 
-        // ====================================================================
-        // MÉTODO PRIVADO PARA REGISTRAR ERRORES EN LA BD
-        // ====================================================================
         private async Task LogErrorAsync(string severity, string source, Exception ex)
         {
             try
@@ -100,7 +92,6 @@ namespace CAE_CRM.Controllers
 
                         cmdLog.Parameters.AddWithValue("@Severity", severity);
 
-                        // Rescatamos el nombre del usuario que está conectado viendo el Dashboard
                         string userName = User.Identity?.Name ?? "Usuario_Desconocido";
                         cmdLog.Parameters.AddWithValue("@User", userName);
 
@@ -121,7 +112,7 @@ namespace CAE_CRM.Controllers
             }
         }
 
-        [AllowAnonymous] // Importante para que cualquiera pueda ver este mensaje
+        [AllowAnonymous]
         public IActionResult AccessDenied()
         {
             return View();

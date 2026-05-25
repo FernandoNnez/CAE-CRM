@@ -16,10 +16,6 @@ namespace CAE_CRM.Controllers
         {
             _connectionString = configuration.GetConnectionString("CAE_CRM_DB");
         }
-
-        // ==========================================
-        // INDEX: Tabla principal
-        // ==========================================
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -55,10 +51,6 @@ namespace CAE_CRM.Controllers
             }
             return View(list);
         }
-
-        // ==========================================
-        // CREATE: Crear nuevo salón
-        // ==========================================
         [HttpGet]
         public IActionResult Create()
         {
@@ -101,10 +93,6 @@ namespace CAE_CRM.Controllers
                 return View(model);
             }
         }
-
-        // ==========================================
-        // EDIT: Editar salón existente
-        // ==========================================
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -174,10 +162,6 @@ namespace CAE_CRM.Controllers
                 return View(model);
             }
         }
-
-        // ==========================================
-        // DELETE: Baja de salón
-        // ==========================================
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {

@@ -19,9 +19,6 @@ namespace CAE_CRM.Controllers
             _connectionString = configuration.GetConnectionString("CAE_CRM_DB");
         }
 
-        // ==========================================
-        // INDEX: Tabla principal
-        // ==========================================
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -41,7 +38,8 @@ namespace CAE_CRM.Controllers
                                 list.Add(new ComputerListModel
                                 {
                                     ComputerID = Convert.ToInt32(reader["ComputerID"]),
-                                    SerialNumber = reader["SerialNumber"].ToString(),
+                                    ManufacturerSerialNumber = reader["ManufacturerSerialNumber"].ToString(),
+                                    UniversityInventoryNumber = reader["UniversityInventoryNumber"].ToString(),
                                     Brand = reader["Brand"].ToString(),
                                     Model = reader["Model"].ToString(),
                                     Processor = reader["Processor"].ToString(),
@@ -63,9 +61,6 @@ namespace CAE_CRM.Controllers
             return View(list);
         }
 
-        // ==========================================
-        // CREATE (GET) - Muestra el formulario vacío
-        // ==========================================
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -76,9 +71,6 @@ namespace CAE_CRM.Controllers
             return View(model);
         }
 
-        // ==========================================
-        // CREATE (POST) - Guarda los datos
-        // ==========================================
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] ComputerFormModel formData)
         {
@@ -98,8 +90,8 @@ namespace CAE_CRM.Controllers
 
                         cmd.Parameters.AddWithValue("@ClassroomID", formData.ClassroomID);
                         cmd.Parameters.AddWithValue("@Desk", formData.Desk ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@SerialNumber", formData.SerialNumber);
-                        cmd.Parameters.AddWithValue("@Brand", formData.Brand);
+                        cmd.Parameters.AddWithValue("@ManufacturerSerialNumber", formData.ManufacturerSerialNumber);
+                        cmd.Parameters.AddWithValue("@UniversityInventoryNumber", formData.UniversityInventoryNumber); cmd.Parameters.AddWithValue("@Brand", formData.Brand);
                         cmd.Parameters.AddWithValue("@Model", formData.Model);
 
                         cmd.Parameters.AddWithValue("@StorageType", formData.StorageType ?? (object)DBNull.Value);
@@ -144,9 +136,6 @@ namespace CAE_CRM.Controllers
             }
         }
 
-        // ==========================================
-        // EDIT (GET) - Muestra el formulario lleno
-        // ==========================================
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -168,7 +157,8 @@ namespace CAE_CRM.Controllers
                                 model.ComputerID = Convert.ToInt32(reader["ComputerID"]);
                                 model.ClassroomID = Convert.ToInt32(reader["ClassroomID"]);
                                 model.Desk = reader["Desk"] != DBNull.Value ? reader["Desk"].ToString() : null;
-                                model.SerialNumber = reader["SerialNumber"].ToString();
+                                model.ManufacturerSerialNumber = reader["ManufacturerSerialNumber"].ToString();
+                                model.UniversityInventoryNumber = reader["UniversityInventoryNumber"].ToString();
                                 model.Brand = reader["Brand"].ToString();
                                 model.Model = reader["Model"].ToString();
 
@@ -219,9 +209,6 @@ namespace CAE_CRM.Controllers
             }
         }
 
-        // ==========================================
-        // EDIT (POST) - Actualiza los datos
-        // ==========================================
         [HttpPost]
         public async Task<IActionResult> Edit([FromForm] ComputerFormModel formData)
         {
@@ -242,7 +229,8 @@ namespace CAE_CRM.Controllers
                         cmd.Parameters.AddWithValue("@ComputerID", formData.ComputerID);
                         cmd.Parameters.AddWithValue("@ClassroomID", formData.ClassroomID);
                         cmd.Parameters.AddWithValue("@Desk", formData.Desk ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@SerialNumber", formData.SerialNumber);
+                        cmd.Parameters.AddWithValue("@ManufacturerSerialNumber", formData.ManufacturerSerialNumber);
+                        cmd.Parameters.AddWithValue("@UniversityInventoryNumber", formData.UniversityInventoryNumber);
                         cmd.Parameters.AddWithValue("@Brand", formData.Brand);
                         cmd.Parameters.AddWithValue("@Model", formData.Model);
 
@@ -288,9 +276,6 @@ namespace CAE_CRM.Controllers
             }
         }
 
-        // ==========================================
-        // DELETE (POST)
-        // ==========================================
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
@@ -317,9 +302,6 @@ namespace CAE_CRM.Controllers
             return RedirectToAction("Index");
         }
 
-        // ==========================================
-        // RESTORE: Rehabilitar equipo dado de baja
-        // ==========================================
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Restore(int id)
@@ -346,9 +328,6 @@ namespace CAE_CRM.Controllers
             return RedirectToAction("Index");
         }
 
-        // ==========================================
-        // HELPERS Y LOGS
-        // ==========================================
         private async Task<IEnumerable<ClassroomListModel>> GetAvailableClassroomsAsync()
         {
             var list = new List<ClassroomListModel>();
@@ -377,7 +356,7 @@ namespace CAE_CRM.Controllers
                     }
                 }
             }
-            catch { /* Manejo silencioso para no romper la vista */ }
+            catch {}
             return list;
         }
         private async Task LogErrorAsync(string severity, string source, Exception ex)

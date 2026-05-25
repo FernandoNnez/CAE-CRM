@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Data;
 using BCrypt.Net;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CAE_CRM.Controllers.Login
 {
@@ -31,13 +32,12 @@ namespace CAE_CRM.Controllers.Login
             if (!ModelState.IsValid) return View("LoginView", model);
 
             string hashDB = null;
-            string userRol = "Standard"; // Valor por defecto por seguridad
+            string userRol = "Standard";
 
             try
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    // Usamos el nuevo SP que creamos
                     using (var command = new SqlCommand("cae_CRM_GetUserIdentity", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
@@ -45,7 +45,6 @@ namespace CAE_CRM.Controllers.Login
 
                         await connection.OpenAsync();
 
-                        // Cambiamos ExecuteScalar por ExecuteReader porque ahora traemos más de una columna
                         using (var reader = await command.ExecuteReaderAsync())
                         {
                             if (await reader.ReadAsync())
@@ -57,24 +56,19 @@ namespace CAE_CRM.Controllers.Login
                     }
                 }
 
-                // Si existe el hash y la contraseña que tecleó coincide
                 if (hashDB != null && BCrypt.Net.BCrypt.Verify(model.Password, hashDB))
                 {
-                    // 1. CREAR LOS CLAIMS (El "Gafete" del usuario)
                     var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, model.User),
-                new Claim(ClaimTypes.Role, userRol) // ¡Aquí inyectamos si es Admin o Standard!
+                new Claim(ClaimTypes.Role, userRol)
             };
 
-                    // 2. CREAR LA IDENTIDAD
                     var claimsIdentity = new ClaimsIdentity(
                         claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                    // 3. INICIAR SESIÓN (Crear la Cookie encriptada en el navegador)
                     var authProperties = new AuthenticationProperties
                     {
-                        IsPersistent = true // Para que recuerde la sesión si cierra el navegador (opcional)
+                        IsPersistent = true
                     };
 
                     await HttpContext.SignInAsync(
@@ -82,7 +76,6 @@ namespace CAE_CRM.Controllers.Login
                         new ClaimsPrincipal(claimsIdentity),
                         authProperties);
 
-                    // Actualizamos la fecha de último login (tu código anterior)
                     using (var connectionUpdate = new SqlConnection(_connectionString))
                     {
                         using (var cmdUpdate = new SqlCommand("cae_CRM_UpdateLastLogin", connectionUpdate))
@@ -117,10 +110,7 @@ namespace CAE_CRM.Controllers.Login
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            // Destruye la cookie de autenticación
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            // Redirige a la pantalla de login
             return RedirectToAction("Login", "Login");
         }
 
@@ -152,19 +142,20 @@ namespace CAE_CRM.Controllers.Login
             {
             }
         }
-        /*
-        [HttpGet]
-        public IActionResult GenerarHash(string textoPlano)
+
+        [AllowAnonymous]
+        [HttpGet("Login/GenerarHash")]
+        public IActionResult GenerarHash(string txt)
         {
-            if (string.IsNullOrEmpty(textoPlano))
+            if (string.IsNullOrEmpty(txt))
             {
-                return Content("Por favor, pon tu contraseña en la URL así: /Login/GenerarHash?textoPlano=oaoaoa");
+                return Content("Por favor, pon tu contraseña en la URL así: /Login/GenerarHash?txt=Wiskas");
             }
 
-            string hashSeguro = BCrypt.Net.BCrypt.HashPassword(textoPlano);
+            string hashSeguro = BCrypt.Net.BCrypt.HashPassword(txt);
 
-            return Content($"Tu contraseña: {textoPlano}\nTu Hash para SQL: {hashSeguro}");
+            return Content($"Tu contraseña: {txt}\nTu Hash para SQL: {hashSeguro}");
         }
-        */
+        
     }
 }

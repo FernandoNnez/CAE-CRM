@@ -7,7 +7,6 @@ using System;
 
 namespace CAE_CRM.Controllers
 {
-    // ¡LA LLAVE MAESTRA! Solo los administradores pueden entrar a este controlador
     [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
@@ -18,9 +17,6 @@ namespace CAE_CRM.Controllers
             _connectionString = configuration.GetConnectionString("CAE_CRM_DB");
         }
 
-        // ====================================================================
-        // READ: Lista general de usuarios (Panel de Gestión)
-        // ====================================================================
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -59,9 +55,6 @@ namespace CAE_CRM.Controllers
             return View(users);
         }
 
-        // ====================================================================
-        // CREATE: Formularios y guardado de nuevos usuarios
-        // ====================================================================
         [HttpGet]
         public IActionResult Create()
         {
@@ -98,7 +91,6 @@ namespace CAE_CRM.Controllers
                     }
                 }
 
-                // Ahora redirige al panel de usuarios en lugar del Home
                 return RedirectToAction("Index");
             }
             catch (SqlException ex) when (ex.Message.Contains("already exists"))
@@ -120,9 +112,6 @@ namespace CAE_CRM.Controllers
             }
         }
 
-        // ====================================================================
-        // UPDATE: Editar usuario existente
-        // ====================================================================
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -207,9 +196,6 @@ namespace CAE_CRM.Controllers
             }
         }
 
-        // ====================================================================
-        // DELETE: Baja lógica de usuario
-        // ====================================================================
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
@@ -219,7 +205,6 @@ namespace CAE_CRM.Controllers
 
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    // Validar que no se borre a sí mismo
                     using (var checkCmd = new SqlCommand("SELECT [User] FROM Users WHERE ID = @ID", connection))
                     {
                         checkCmd.Parameters.AddWithValue("@ID", id);
@@ -233,7 +218,6 @@ namespace CAE_CRM.Controllers
                         }
                     }
 
-                    // Ejecutar el Soft Delete
                     using (var command = new SqlCommand("cae_CRM_DeleteUser", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
@@ -251,9 +235,6 @@ namespace CAE_CRM.Controllers
             return RedirectToAction("Index");
         }
 
-        // ====================================================================
-        // MÉTODO PRIVADO PARA REGISTRAR ERRORES EN LA BD
-        // ====================================================================
         private async Task LogErrorAsync(string severity, string source, Exception ex)
         {
             try
@@ -282,9 +263,7 @@ namespace CAE_CRM.Controllers
                 }
             }
             catch
-            {
-                // Falla silenciosa si no se puede escribir en el log
-            }
+            {}
         }
     }
 }

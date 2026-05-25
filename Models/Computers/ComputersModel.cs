@@ -1,13 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using CAE_CRM.Models.Classrooms; // Necesario para la lista desplegable de salones
+using CAE_CRM.Models.Classrooms;
 
 namespace CAE_CRM.Models.Computers
 {
-    // 1. Modelo para la lista (Panel principal de computadoras)
     public class ComputerListModel
     {
         public int ComputerID { get; set; }
-        public string SerialNumber { get; set; }
+        [Required(ErrorMessage = "El número de serie del fabricante es obligatorio.")]
+        public string ManufacturerSerialNumber { get; set; }
+        [Required(ErrorMessage = "El número de inventario de la universidad es obligatorio.")]
+        public string UniversityInventoryNumber { get; set; }
         public string Brand { get; set; }
         public string Model { get; set; }
         public string Processor { get; set; }
@@ -15,11 +17,9 @@ namespace CAE_CRM.Models.Computers
         public string Status { get; set; }
         public string Desk { get; set; }
 
-        // El JOIN de SQL nos permite mostrar el nombre del salón en vez del ID
         public string ClassroomName { get; set; }
     }
 
-    // 2. Modelo para el formulario de Creación y Edición
     public class ComputerFormModel
     {
         public int ComputerID { get; set; }
@@ -30,11 +30,12 @@ namespace CAE_CRM.Models.Computers
         [Required(ErrorMessage = "El Identificador interno es obligatorio.")]
         public string Desk { get; set; }
 
-        // Propiedad auxiliar para llenar el <select> en la vista
         public IEnumerable<ClassroomListModel>? AvailableClassrooms { get; set; }
 
-        [Required(ErrorMessage = "El número de serie es obligatorio.")]
-        public string SerialNumber { get; set; }
+        [Required(ErrorMessage = "El número de serie del fabricante es obligatorio.")]
+        public string ManufacturerSerialNumber { get; set; }
+        [Required(ErrorMessage = "El número de inventario de la universidad es obligatorio.")]
+        public string UniversityInventoryNumber { get; set; }
 
         [Required(ErrorMessage = "La marca es obligatoria.")]
         public string Brand { get; set; }

@@ -44,7 +44,6 @@
         </div>
     }
 
-    <!-- ¡LA ETIQUETA FORM DEBE ENVOLVER TODO! -->
     <form asp-controller="Computers" asp-action="Create" method="post">
         
         <div class="form-section">
@@ -68,8 +67,12 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label asp-for="SerialNumber">Número de Serie (S/N)</label>
-                    <input asp-for="SerialNumber" class="form-control" />
+                    <label asp-for="ManufacturerSerialNumber">No. Serie (Fabricante)</label>
+                    <input asp-for="ManufacturerSerialNumber" class="form-control" placeholder="Ej. PF2B3..." />
+                </div>
+                <div class="form-group">
+                    <label asp-for="UniversityInventoryNumber">No. Inventario UNAM</label>
+                    <input asp-for="UniversityInventoryNumber" class="form-control" placeholder="Etiqueta patrimonial" />
                 </div>
                 <div class="form-group">
                     <label asp-for="Brand">Marca</label>
@@ -133,7 +136,6 @@
 
         <div style="display: flex; gap: 10px; margin-top: 20px;">
             <a asp-action="Index" style="flex: 1; text-align: center; background-color: #f8f9fa; color: #333; padding: 12px; text-decoration: none; border: 1px solid #ddd; border-radius: 4px;">Cancelar</a>
-            <!-- El botón submit EMPUJA todo lo que esté dentro de <form> -->
             <button type="submit" style="flex: 2; background-color: #002b5c; color: white; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Guardar Equipo</button>
         </div>
     </form>

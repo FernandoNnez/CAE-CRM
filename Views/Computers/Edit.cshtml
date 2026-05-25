@@ -1,4 +1,5 @@
 ﻿@model CAE_CRM.Models.Computers.ComputerFormModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{ ViewData["Title"] = "Editar Computadora"; }
 
 <style>
@@ -10,13 +11,12 @@
 </style>
 
 <div style="max-width: 900px; margin: 30px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-top: 4px solid #002b5c;">
-    <h2 style="color: #002b5c; margin-top: 0;">Editar Equipo: @Model.SerialNumber</h2>
+    <h2 style="color: #002b5c; margin-top: 0;">Editar Equipo: @Model.UniversityInventoryNumber</h2>
     
     @if (ViewBag.Error != null)
     { <div style="background: #f8d7da; color: #842029; padding: 10px; border-radius: 4px; margin-bottom: 15px;">@ViewBag.Error</div> }
 
     <form asp-action="Edit" method="post">
-        <!-- ¡Campo vital para la edición! -->
         <input type="hidden" asp-for="ComputerID" />
 
         <div class="form-section">
@@ -41,9 +41,14 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label asp-for="SerialNumber">Número de Serie (S/N)</label>
-                    <input asp-for="SerialNumber" class="form-control" />
-                    <span asp-validation-for="SerialNumber" style="color: red; font-size: 12px;"></span>
+                    <label asp-for="ManufacturerSerialNumber">No. Serie (Fabricante)</label>
+                    <input asp-for="ManufacturerSerialNumber" class="form-control" />
+                    <span asp-validation-for="ManufacturerSerialNumber" style="color: red; font-size: 12px;"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="UniversityInventoryNumber">No. Inventario UNAM</label>
+                    <input asp-for="UniversityInventoryNumber" class="form-control" />
+                    <span asp-validation-for="UniversityInventoryNumber" style="color: red; font-size: 12px;"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Brand">Marca</label>

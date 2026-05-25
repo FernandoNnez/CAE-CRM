@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<CAE_CRM.Models.Computers.ComputerListModel>
-@{
-    ViewData["Title"] = "Inventario de Computadoras";
-}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{ ViewData["Title"] = "Inventario de Computadoras"; }
 
 <div style="padding: 20px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -19,7 +18,8 @@
     <table style="width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
         <thead>
             <tr style="background-color: #f4f7f6; border-bottom: 2px solid #d59f0f;">
-                <th style="padding: 12px; text-align: left;">S/N</th>
+                <th style="padding: 12px; text-align: left;">No. Inventario</th>
+                <th style="padding: 12px; text-align: left;">No. Serie</th>
                 <th style="padding: 12px; text-align: left;">Marca / Modelo</th>
                 <th style="padding: 12px; text-align: left;">Procesador</th>
                 <th style="padding: 12px; text-align: center;">RAM</th>
@@ -32,7 +32,8 @@
             @foreach (var item in Model)
             {
                 <tr style="border-bottom: 1px solid #eee;">
-                    <td style="padding: 12px; font-family: monospace; font-weight:bold;">@item.SerialNumber</td>
+                    <td style="padding: 12px; font-family: monospace; font-weight:bold;">@item.UniversityInventoryNumber</td>
+                    <td style="padding: 12px; font-family: monospace; font-weight:bold;">@item.ManufacturerSerialNumber</td>
                     <td style="padding: 12px;">@item.Brand @item.Model</td>
                     <td style="padding: 12px; font-size: 14px;">@item.Processor</td>
                     <td style="padding: 12px; text-align: center; font-weight: bold;">@item.TotalMemoryGB GB</td>

@@ -12,7 +12,8 @@
     {
         public string ClassroomName { get; set; }
         public string Desk {  get; set; }
-        public string SerialNumber { get; set; }        
+        public string ManufacturerSerialNumber { get; set; }
+        public string UniversityInventoryNumber { get; set; }
         public string MovementType { get; set; }
         public DateTime MovementDate { get; set; }
     }
